@@ -1,4 +1,4 @@
-local dispatchList = DispatchList:new({})
+MyDispatchList = DispatchList:new({})
 
 ---Create the dispatch notification (Client)
 ---@param title string Dispatch Title
@@ -18,13 +18,13 @@ exports("CreateDispatchNotify", CreateDispatchNotify)
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotification)
     ShowNotification(Language["new-dispatch"])
-    dispatchList:addNotification(dispatchNotification)
+    MyDispatchList:addNotification(dispatchNotification)
 end)
 
 
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:updateDispatch", function (dispatchNotification)
-    dispatchList.notifications[dispatchNotification.id] = dispatchNotification
+    MyDispatchList.notifications[dispatchNotification.id] = dispatchNotification
 end)
 
 --[[
@@ -32,7 +32,7 @@ end)
 ]]
 
 RegisterCommand("openDispatch", function (source, args, raw)
-    local contextID = RegisterContext(dispatchList.notifications)
+    local contextID = RegisterContext(MyDispatchList.notifications)
     lib.showContext(contextID)
 end)
 RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', 'l')
