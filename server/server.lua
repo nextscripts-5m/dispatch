@@ -21,11 +21,26 @@ RegisterNetEvent("nx_dispatch:CreateDispatchNotify", function (title, descriptio
     CreateDispatchNotify(title, description, jobName, coords, source)
 end)
 
-RegisterNetEvent("nx_dispatch:UpdateDispatchNotify", function (id)
+RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyCounter", function (id)
     ---@type Notify
     local n = AllNotifies[id]
     n:updateCounter()
     n:updateReceivers()
+end)
+
+RegisterNetEvent("nx_dispatch:UpdateDispatchcNotifyState", function (id, state)
+    local source    = source
+    ---@type Notify
+    local n         = AllNotifies[id]
+    n.isNew         = state and state or false
+    n:updateReceiver(source)
+end)
+
+RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyPlayer", function (id)
+    local source    = source
+    ---@type Notify
+    local n         = AllNotifies[id]
+    n:removePlayer(source)
 end)
 
 --[[]]
@@ -57,8 +72,35 @@ end
 exports("CreateDispatchNotify", CreateDispatchNotify)
 
 
---- TODO: create a method for deleting old dispatches (check all database records ID with curret AllNotifies ID)
---- TODO: gps on jobs
+--- TODO: gps on jobs. Following client function for getting entity from ID
+--- the server create a table with ["job"] = IDs
+--- then send to whose that have the job an event
+--- the client add the blip for the entity
+--- each 1,5s server update all clients
+--- CHECK: what happen if someone relog? or disconnect and riconnect ?
+--- NETWORK_GET_ENTITY_FROM_NETWORK_ID
+--- GetPlayerServerId(PlayerId()))
+
+-- CreateThread(function ()
+--     while true do
+
+--         local allPlayers    = {}
+
+--         for job, _ in pairs(Config.AllowedJobs) do
+
+--             for _, playerId in pairs(GetPlayers()) do
+--                 local xPlayer           = GetXPlayer(playerId)
+--                 local xPlayerJobName    = GetPlayerJobName(xPlayer)
+
+--                 if xPlayerJobName == job then
+--                     table.insert(allPlayers[job], playerId)
+--                 end
+
+--             end
+--         end
+--         Wait(1500) -- 1 half seconds
+--     end
+-- end)
 
 
 --[[
