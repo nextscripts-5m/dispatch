@@ -6,6 +6,7 @@
 ---@field peopleCounter number
 ---@field gps vector4
 ---@field players table
+---@field isNew boolean
 local Notify = {}
 
 ---Dispatcher Notification Constructor
@@ -24,7 +25,8 @@ function Notify:new(id, title, description, jobName, peopleCounter, gps)
         jobName         = jobName,
         peopleCounter   = peopleCounter,
         gps             = gps,
-        players         = {}
+        players         = {},
+        isNew           = true
     }
     setmetatable(o, self)
     self.__index = self
@@ -43,20 +45,27 @@ function Notify:updateCounter()
     return (response > 0) and count or -1
 end
 
+---Update player with given `id`
+---@param id any
+function Notify:updateReceiver(id)
+    TriggerClientEvent("nx_dispatch:updateDispatch", id, self)
+end
+
+---Update dispatch received by all `self.players`
 function Notify:updateReceivers()
     for k, v in pairs(self.players) do
-        TriggerClientEvent("nx_dispatch:updateDispatch", k, self)
+        self:updateReceiver(k)
     end
 end
 
 ---Add a player to this dispatch notification
----@param id number
+---@param id any
 function Notify:addPlayer(id)
     self.players[id] = id
 end
 
 ---Remove a player from this dispatch notification
----@param id number
+---@param id any
 function Notify:removePlayer(id)
     self.players[id] = nil
 end
