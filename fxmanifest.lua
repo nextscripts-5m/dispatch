@@ -5,12 +5,12 @@ game 'gta5'
 version	'1.0'
 
 client_scripts {
+	'client/framework.lua',
+	'client/functions.lua',
     'client/client.lua',
-	'client/functions.lua'
 }
 
 server_scripts {
-	'server/notification.lua',
 	'@oxmysql/lib/MySQL.lua',
 	'server/framework.lua',
 	'server/functions.lua',
@@ -18,6 +18,10 @@ server_scripts {
 }
 
 shared_scripts {
+	'shared/notification.lua',
+	'shared/dispatch_list.lua',
+	'@ox_lib/init.lua',
+	'locales.lua',
     'config.lua',
 }
 
