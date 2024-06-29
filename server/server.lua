@@ -12,17 +12,31 @@ end
 --- Contains all notifies
 AllNotifies = {}
 
-RegisterNetEvent("nx_dispatch:CreateDispatchNotify", function (title, description, jobName)
+--[[
+    Events
+]]
+
+RegisterNetEvent("nx_dispatch:CreateDispatchNotify", function (title, description, jobName, coords)
     local source    = source
-    CreateDispatchNotify(title, description, jobName, source)
+    CreateDispatchNotify(title, description, jobName, coords, source)
 end)
+
+RegisterNetEvent("nx_dispatch:UpdateDispatchNotify", function (id)
+    ---@type Notify
+    local n = AllNotifies[id]
+    n:updateCounter()
+    n:updateReceivers()
+end)
+
+--[[]]
 
 ---Create the dispatch notification (Server)
 ---@param title string Dispatch Title
 ---@param description string Dispatch description
 ---@param jobName string Receiver job
+---@param coords vector3 Gps coords
 ---@param xPlayerSource any Sender Player's source
-CreateDispatchNotify = function (title, description, jobName, xPlayerSource)
+CreateDispatchNotify = function (title, description, jobName, coords, xPlayerSource)
 
     if not JobIsAllowed(jobName) then
         print(("Job '%s' can't receive dispatch notification"):format(jobName))
@@ -35,7 +49,8 @@ CreateDispatchNotify = function (title, description, jobName, xPlayerSource)
         title, jobName, description, xPlayerIdentifier
     })
 
-    local newNotify = Notify:new(id, title, description, jobName, 0)
+    local newNotify = Notify:new(id, title, description, jobName, 0, coords)
+    newNotify:addPlayer(xPlayerSource)
     newNotify:sendDispatch()
     AllNotifies[newNotify.id] = newNotify
 end
