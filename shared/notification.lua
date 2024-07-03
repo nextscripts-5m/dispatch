@@ -4,6 +4,7 @@
 ---@field description string
 ---@field jobName string
 ---@field peopleCounter number
+---@field playersIDCounter table
 ---@field gps vector4
 ---@field players table
 ---@field isNew boolean
@@ -19,18 +20,43 @@ local Notify = {}
 ---@return Notify
 function Notify:new(id, title, description, jobName, peopleCounter, gps)
     local o = {
-        id              = id,
-        title           = title,
-        description     = description,
-        jobName         = jobName,
-        peopleCounter   = peopleCounter,
-        gps             = gps,
-        players         = {},
-        isNew           = true
+        id                  = id,
+        title               = title,
+        description         = description,
+        jobName             = jobName,
+        peopleCounter       = peopleCounter,
+        playersIDCounter    = {},
+        gps                 = gps,
+        players             = {},
+        isNew               = true
     }
     setmetatable(o, self)
     self.__index = self
     return o
+end
+
+---Check if a player is already coming for that notification
+---@param id any
+---@return boolean
+function Notify:isPlayerAlreadyComing(id)
+    for k, v in pairs(self.playersIDCounter) do
+        if v == id then
+            return true
+        end
+    end
+    return false
+end
+
+---Add a player to players coming for dispatch
+---@param id any
+function Notify:addPlayerComing(id)
+    self.playersIDCounter[id] = id
+end
+
+---Remove a player from player coming for dispatch
+---@param id any
+function Notify:removePlayerComing(id)
+    self.playersIDCounter[id] = nil
 end
 
 ---Update the counter and returns the new counter
