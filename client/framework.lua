@@ -14,7 +14,6 @@ ShowNotification = function (message, type)
     type = type and type or "info"
     if Framework == "ESX" then
         ESX.ShowNotification(message, type)
-
     elseif Framework == "QB" then
         QBCore.Functions.Notify(message, type, 5000)
     end
