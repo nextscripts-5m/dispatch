@@ -1,11 +1,29 @@
 MyDispatchList = DispatchList:new({})
 
+PlayerLoaded = function ()
+    TriggerServerEvent("nx_dispatch:AddPlayer", GetJobFramework())
+end
+
+PlayerLogout = function ()
+    TriggerServerEvent("nx_dispatch:RemovePlayer", GetJobFramework())
+end
+
 if Config.Framework == "esx" then
     Framework = "ESX"
     ESX = exports["es_extended"]:getSharedObject()
+
+    RegisterNetEvent("esx:playerLoaded", function (xPlayer, isNew, skin)
+        ESX.PlayerData = xPlayer
+        PlayerLoaded()
+    end)
+    RegisterNetEvent("esx:onPlayerLogout", PlayerLogout)
+
 elseif Config.Framework == "qb" then
     Framework = "QB"
     QBCore = exports['qb-core']:GetCoreObject()
+
+    RegisterNetEvent("QBCore:Client:OnPlayerLoaded", PlayerLoaded)
+    RegisterNetEvent("QBCore:Client:OnPlayerUnload", PlayerLogout)
 else
     print("Unsopported Framework")
     return
@@ -36,10 +54,24 @@ RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotif
     })
 end)
 
-
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:updateDispatch", function (dispatchNotification)
     MyDispatchList.notifications[dispatchNotification.id] = dispatchNotification
+end)
+
+---TODO: implement the blip add/remove 
+--- NETWORK_GET_ENTITY_FROM_NETWORK_ID
+--- GetPlayerServerId(PlayerId()))
+--- change the blip name if it's me
+
+---Get the list of online players with my job
+---@param players PlayerList
+RegisterNetEvent("nx_dispatch:sendPlayerList", function (players)
+    for id, player in pairs(players) do
+        ---@type PlayerInfo
+        player = player
+        print(id, json.encode(player))
+    end
 end)
 
 --[[
@@ -86,6 +118,13 @@ RegisterCommand("openDispatch", function (source, args, raw)
 end)
 RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', 'l')
 
+RegisterCommand("+gpson", function (source, args, raw)
+    TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), true)
+end)
+
+RegisterCommand("+gpsoff", function ()
+    TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), false)
+end)
 
 --[[
     Test
