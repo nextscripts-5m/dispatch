@@ -22,8 +22,11 @@ RegisterNetEvent("nx_dispatch:CreateDispatchNotify", function (title, descriptio
 end)
 
 RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyCounter", function (id)
+    local source    = source
     ---@type Notify
-    local n = AllNotifies[id]
+    local n         = AllNotifies[id]
+    if n:isPlayerAlreadyComing(source) then return end
+    n:addPlayerComing(source)
     n:updateCounter()
     n:updateReceivers()
 end)
