@@ -20,6 +20,8 @@ server_scripts {
 shared_scripts {
 	'shared/notification.lua',
 	'shared/dispatch_list.lua',
+	'shared/player_info.lua',
+	'shared/player_list.lua',
 	'@ox_lib/init.lua',
 	'locales.lua',
     'config.lua',
