@@ -1,5 +1,16 @@
 MyDispatchList = DispatchList:new({})
 
+if Config.Framework == "esx" then
+    Framework = "ESX"
+    ESX = exports["es_extended"]:getSharedObject()
+elseif Config.Framework == "qb" then
+    Framework = "QB"
+    QBCore = exports['qb-core']:GetCoreObject()
+else
+    print("Unsopported Framework")
+    return
+end
+
 ---Create the dispatch notification (Client)
 ---@param title string Dispatch Title
 ---@param description string Dispatch description

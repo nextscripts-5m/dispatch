@@ -1,5 +1,4 @@
 TriggerServerCallback = function (name, callback, ...)
-
     if Framework == "ESX" then
         ESX.TriggerServerCallback(name, callback, ...)
 
