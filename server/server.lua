@@ -10,7 +10,8 @@ else
 end
 
 --- Contains all notifies
-AllNotifies = {}
+AllNotifies         = {}
+AllOnlinePlayers    = PlayerList:new({})
 
 --[[
     Events
@@ -46,6 +47,30 @@ RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyPlayer", function (id)
     n:removePlayer(source)
 end)
 
+RegisterNetEvent("nx_dispatch:UpdatePlayerGps", function (jobName, toggle)
+    local source    = source
+    local p = AllOnlinePlayers:getPlayer(source)
+    if type(p) ~= "number" then
+        p:toggleGps(toggle)
+        AllOnlinePlayers.players[jobName][p.id] = p
+        AllOnlinePlayers:sendPlayerList(jobName)
+    end
+end)
+
+RegisterNetEvent("nx_dispatch:AddPlayer", function (jobName)
+    local source    = source
+    local xPlayer   = GetXPlayer(source)
+    local player    = PlayerInfo:new(tonumber(source) + 0, GetPlayerName(xPlayer), GetPlayerJobName(xPlayer))
+    AllOnlinePlayers:addPlayer(jobName, player)
+    AllOnlinePlayers:sendPlayerList(jobName)
+end)
+
+RegisterNetEvent("nx_dispatch:RemovePlayer", function (jobName)
+    local source    = source
+    AllOnlinePlayers:removePlayer(jobName, tonumber(source) + 0)
+    AllOnlinePlayers:sendPlayerList(jobName)
+end)
+
 --[[]]
 
 ---Create the dispatch notification (Server)
@@ -75,35 +100,30 @@ end
 exports("CreateDispatchNotify", CreateDispatchNotify)
 
 
---- TODO: gps on jobs. Following client function for getting entity from ID
---- the server create a table with ["job"] = IDs
---- then send to whose that have the job an event
---- the client add the blip for the entity
---- each 1,5s server update all clients
---- CHECK: what happen if someone relog? or disconnect and riconnect ?
---- NETWORK_GET_ENTITY_FROM_NETWORK_ID
---- GetPlayerServerId(PlayerId()))
+CreateThread(function ()
+    while true do
 
--- CreateThread(function ()
---     while true do
+        for job, _ in pairs(Config.AllowedJobs) do
 
---         local allPlayers    = {}
+            for _, playerId in pairs(GetPlayers()) do
+                local xPlayer           = GetXPlayer(playerId)
+                local xPlayerJobName    = GetPlayerJobName(xPlayer)
 
---         for job, _ in pairs(Config.AllowedJobs) do
+                if xPlayerJobName == job then
+                    local player = PlayerInfo:new(tonumber(playerId) + 0, GetPlayerName(xPlayer), xPlayerJobName)
+                    AllOnlinePlayers:addPlayer(job, player)
+                end
+            end
 
---             for _, playerId in pairs(GetPlayers()) do
---                 local xPlayer           = GetXPlayer(playerId)
---                 local xPlayerJobName    = GetPlayerJobName(xPlayer)
+            AllOnlinePlayers:sendPlayerList(job)
 
---                 if xPlayerJobName == job then
---                     table.insert(allPlayers[job], playerId)
---                 end
+        end
 
---             end
---         end
---         Wait(1500) -- 1 half seconds
---     end
--- end)
+
+
+        Wait(15000) -- 15 seconds
+    end
+end)
 
 
 --[[
