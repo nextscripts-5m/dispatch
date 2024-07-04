@@ -16,7 +16,16 @@ if Config.Framework == "esx" then
         ESX.PlayerData = xPlayer
         PlayerLoaded()
     end)
+
     RegisterNetEvent("esx:onPlayerLogout", PlayerLogout)
+
+    RegisterNetEvent("esx:setJob", function (newJob, lastJob)
+        ESX.PlayerData.job = newJob
+        if newJob.name ~= lastJob.name then
+            Blip:removeBlip(PlayerPedId())
+            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
+        end
+    end)
 
 elseif Config.Framework == "qb" then
     Framework = "QB"
@@ -24,6 +33,18 @@ elseif Config.Framework == "qb" then
 
     RegisterNetEvent("QBCore:Client:OnPlayerLoaded", PlayerLoaded)
     RegisterNetEvent("QBCore:Client:OnPlayerUnload", PlayerLogout)
+
+    RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
+        local newJob = val.job.name
+        local lastJob = PlayerData.job.name
+        print(newJob, lastJob)
+        if newJob ~= lastJob then
+            Blip:removeBlip(PlayerPedId())
+            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
+        end
+        PlayerData = val
+        -- print(QBCore.Debug(PlayerData))
+    end)
 else
     print("Unsopported Framework")
     return
@@ -59,18 +80,25 @@ RegisterNetEvent("nx_dispatch:updateDispatch", function (dispatchNotification)
     MyDispatchList.notifications[dispatchNotification.id] = dispatchNotification
 end)
 
----TODO: implement the blip add/remove 
---- NETWORK_GET_ENTITY_FROM_NETWORK_ID
---- GetPlayerServerId(PlayerId()))
---- change the blip name if it's me
 
 ---Get the list of online players with my job
 ---@param players PlayerList
 RegisterNetEvent("nx_dispatch:sendPlayerList", function (players)
+    local myID  = GetPlayerServerId(PlayerId())
     for id, player in pairs(players) do
         ---@type PlayerInfo
         player = player
-        print(id, json.encode(player))
+
+        if player.isGpsActive then
+            local playerId = GetPlayerFromServerId(player.id)
+            local entity    = GetPlayerPed(playerId)
+
+            if GetBlipFromEntity(entity) == 0 then
+                local name      = (myID == player.id) and Language["me"] or player.name
+                local blip      = Blip:new(entity, player.jobName, name)
+                blip:createBlip()
+            end
+        end
     end
 end)
 
@@ -79,7 +107,7 @@ end)
 ]]
 
 RegisterNUICallback("closeUI", function (data, cb)
-    print(data.message)
+    -- print(data.message)
     SetNuiFocus(false, false)
 end)
 
@@ -116,7 +144,7 @@ RegisterCommand("openDispatch", function (source, args, raw)
         SetNuiFocus(true, true)
     end
 end)
-RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', 'l')
+RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', Config.OpenDispatch)
 
 RegisterCommand("+gpson", function (source, args, raw)
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), true)
@@ -124,6 +152,7 @@ end)
 
 RegisterCommand("+gpsoff", function ()
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), false)
+    Blip:removeBlip(PlayerPedId())
 end)
 
 --[[
