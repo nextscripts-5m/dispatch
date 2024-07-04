@@ -15,7 +15,7 @@ You can choose between ox_lib or custom UI provided by me
 
 * Execute the sql query from sql.sql file
 * Add ensure dispatch  to your server.cfg or put the folder into a [collection] already started in the server.cfg
-* **DO NOT CHANGE THE OF THE RESOURCE** (yet)
+* **DO NOT CHANGE THE NAME OF THE RESOURCE** (yet)
 
 ## Dependencies
 
