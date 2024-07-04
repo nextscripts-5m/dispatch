@@ -9,6 +9,7 @@ Lang = {
         ["delete"] = "Elimina Notifica",
         ["already-seen"] = "Segna come già letta!",
         ["not-seen"] = "Segna come NON letta!",
+        ["me"] = "Io",
     },
     ["en"] = {
         ["new-dispatch"] = "You have a new report!",
@@ -18,5 +19,6 @@ Lang = {
         ["delete"] = "Delete Notification",
         ["already-seen"] = "Mark as already read!",
         ["not-seen"] = "Mark as NOT read!",
+        ["me"] = "Me",
     }
 }
