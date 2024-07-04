@@ -160,6 +160,6 @@ end)
     !DO NOT UNCOMMENT THIS!
 ]]
 
-RegisterCommand("cc", function (source, args, raw)
-    CreateDispatchNotify("Title 1", "Description", "police", GetEntityCoords(PlayerPedId()))
-end)
+-- RegisterCommand("cc", function (source, args, raw)
+--     CreateDispatchNotify("Title 1", "Description", "police", GetEntityCoords(PlayerPedId()))
+-- end)
