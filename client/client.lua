@@ -34,15 +34,15 @@ elseif Config.Framework == "qb" then
     RegisterNetEvent("QBCore:Client:OnPlayerLoaded", PlayerLoaded)
     RegisterNetEvent("QBCore:Client:OnPlayerUnload", PlayerLogout)
 
+    local lastJob = QBCore.Functions.GetPlayerData().job.name
+
     RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
         local newJob = val.job.name
-        local lastJob = PlayerData.job.name
-        print(newJob, lastJob)
         if newJob ~= lastJob then
             Blip:removeBlip(PlayerPedId())
             TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
         end
-        PlayerData = val
+        lastJob = newJob
         -- print(QBCore.Debug(PlayerData))
     end)
 else
