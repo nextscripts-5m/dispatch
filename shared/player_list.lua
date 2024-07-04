@@ -32,7 +32,9 @@ end
 ---@param jobName string
 ---@param id any
 function PlayerList:removePlayer(jobName, id)
-    self.players[jobName][id] = nil
+    if self.players[jobName] then
+        self.players[jobName][id] = nil
+    end
 end
 
 ---Get the online player with the given `playerID` id. It must be already registered from the server in the `players` table.
@@ -54,7 +56,7 @@ end
 ---Send `players` to all online players with given `jobName`
 ---@param jobName any
 function PlayerList:sendPlayerList(jobName)
-    local players = self.players[jobName]
+    local players = self.players[jobName] and self.players[jobName] or {}
 
     for id, player in pairs(players) do
         TriggerClientEvent("nx_dispatch:sendPlayerList", id, players)
