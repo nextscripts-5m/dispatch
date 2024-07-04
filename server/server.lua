@@ -54,6 +54,7 @@ RegisterNetEvent("nx_dispatch:UpdatePlayerGps", function (jobName, toggle)
         p:toggleGps(toggle)
         AllOnlinePlayers.players[jobName][p.id] = p
         AllOnlinePlayers:sendPlayerList(jobName)
+        -- print(json.encode(AllOnlinePlayers, {indent=true}))
     end
 end)
 
@@ -69,6 +70,7 @@ RegisterNetEvent("nx_dispatch:RemovePlayer", function (jobName)
     local source    = source
     AllOnlinePlayers:removePlayer(jobName, tonumber(source) + 0)
     AllOnlinePlayers:sendPlayerList(jobName)
+    -- print(json.encode(AllOnlinePlayers, {indent=true}))
 end)
 
 --[[]]
@@ -107,20 +109,18 @@ CreateThread(function ()
 
             for _, playerId in pairs(GetPlayers()) do
                 local xPlayer           = GetXPlayer(playerId)
-                local xPlayerJobName    = GetPlayerJobName(xPlayer)
 
-                if xPlayerJobName == job then
-                    local player = PlayerInfo:new(tonumber(playerId) + 0, GetPlayerName(xPlayer), xPlayerJobName)
-                    AllOnlinePlayers:addPlayer(job, player)
+                if xPlayer then
+                    local xPlayerJobName    = GetPlayerJobName(xPlayer)
+
+                    if xPlayerJobName == job then
+                        local player = PlayerInfo:new(tonumber(playerId) + 0, GetPlayerName(xPlayer), xPlayerJobName)
+                        AllOnlinePlayers:addPlayer(job, player)
+                    end
                 end
             end
-
             AllOnlinePlayers:sendPlayerList(job)
-
         end
-
-
-
         Wait(15000) -- 15 seconds
     end
 end)
