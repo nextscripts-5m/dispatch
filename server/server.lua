@@ -22,21 +22,35 @@ RegisterNetEvent("nx_dispatch:CreateDispatchNotify", function (title, descriptio
     CreateDispatchNotify(title, description, jobName, coords, source)
 end)
 
-RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyCounter", function (id)
+RegisterNetEvent("nx_dispatch:IncreaseDispatchNotifyCounter", function (id)
     local source    = source
     ---@type Notify
     local n         = AllNotifies[id]
     if n:isPlayerAlreadyComing(source) then return end
     n:addPlayerComing(source)
-    n:updateCounter()
+    n:updateCounter(1)
     n:updateReceivers()
 end)
 
-RegisterNetEvent("nx_dispatch:UpdateDispatchcNotifyState", function (id, state)
+RegisterNetEvent("nx_dispatch:DecreaseDispatchNotifyCounter", function (id)
     local source    = source
     ---@type Notify
     local n         = AllNotifies[id]
-    n.isNew         = state and state or false
+    if not n:isPlayerAlreadyComing(source) then return end
+    n:removePlayerComing(source)
+    n:updateCounter(-1)
+    n:updateReceivers()
+end)
+
+RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyState", function (id, state)
+    local source    = source
+    ---@type Notify
+    local n         = AllNotifies[id]
+    if state then
+        n:addPlayerState(source)
+    else
+        n:removePlayerState(source)
+    end
     n:updateReceiver(source)
 end)
 
@@ -94,7 +108,10 @@ CreateDispatchNotify = function (title, description, jobName, coords, xPlayerSou
         title, jobName, description, xPlayerIdentifier
     })
 
-    local newNotify = Notify:new(id, title, description, jobName, 0, coords)
+    local time  = os.date("*t")
+    time        = ("%s:%s"):format(time.hour, time.min)
+    
+    local newNotify = Notify:new(id, title, time, description, jobName, 0, coords)
     newNotify:addPlayer(xPlayerSource)
     newNotify:sendDispatch()
     AllNotifies[newNotify.id] = newNotify
