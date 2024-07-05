@@ -31,15 +31,13 @@ shared_scripts {
 ui_page 'web/ui.html'
 
 files {
-	'web/css/*',
-	'web/js/script.js',
-	'web/img/*',
 	'web/ui.html',
 	"web/index.html",
     "web/*.png",
     "web/**/*.png",
     "web/*.js",
     "web/**/*.js",
+	"web/*.map",
     "web/*.json",
     "web/**/*.json",
     "web/**/*.wasm",
