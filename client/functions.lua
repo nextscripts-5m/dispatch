@@ -2,8 +2,6 @@ RegisterContext = function (dispatchNotifications)
 
     local elements = {}
 
-    --- TODO: the counter updates only once for player. DO NOT spam GO
-
     for k, v in pairs(dispatchNotifications) do
         ---@type Notify
         local notify = v
