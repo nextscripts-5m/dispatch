@@ -46,7 +46,10 @@ RegisterContext = function (dispatchNotifications)
             title       = notify.title,
             description = notify.description,
             menu        = ("notify_%s"):format(notify.id),
-            icon        = notify.isNew and "fa-regular fa-circle" or "fa-regular fa-circle-check"
+            icon        = notify.isNew and "fa-regular fa-circle" or "fa-regular fa-circle-check",
+            metadata    = {
+                {label = Language["dispatch-people"], value = notify.peopleCounter},
+            },
         })
     end
 
