@@ -1,12 +1,12 @@
 # 💻 Dispatch
 
 # ✨ Main Features
-Implement a notification system for your in-game jobs. It also offers a tracking system to see colleagues on the map!
+Implement a notification system for your in-game jobs. It also offers a **GPS** tracking system to see colleagues on the map!
 
 ## 🔧 Configuration
-You can easily add jobs for receiving dispatch notifies
 
-Configure in-map blips for players
+* You can easily add jobs for receiving dispatch notifies
+* Configure in-map blips for players (for GPS)
 
 ## 🎨 UI
 You can choose between ox_lib or custom UI provided by me
