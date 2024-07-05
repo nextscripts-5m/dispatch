@@ -37,7 +37,6 @@ files {
     "web/**/*.png",
     "web/*.js",
     "web/**/*.js",
-	"web/*.map",
     "web/*.json",
     "web/**/*.json",
     "web/**/*.wasm",
