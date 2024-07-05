@@ -1,4 +1,5 @@
-MyDispatchList = DispatchList:new({})
+MyDispatchList      = DispatchList:new({})
+local configuration = false
 
 PlayerLoaded = function ()
     TriggerServerEvent("nx_dispatch:AddPlayer", GetJobFramework())
@@ -69,7 +70,9 @@ exports("CreateDispatchNotify", CreateDispatchNotify)
 
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotification)
+    
     ShowNotification(Language["new-dispatch"])
+
     MyDispatchList:addNotification(dispatchNotification)
     SendNUIMessage({
         update = true,
@@ -79,6 +82,10 @@ end)
 
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:updateDispatch", function (dispatchNotification)
+    local myID                      = GetPlayerServerId(PlayerId())
+    dispatchNotification            = Notify:fromTable(dispatchNotification)
+    dispatchNotification.isComing   = dispatchNotification:isPlayerAlreadyComing(myID)
+    dispatchNotification.isNew      = dispatchNotification:hasPlayerChecked(myID)
     MyDispatchList.notifications[dispatchNotification.id] = dispatchNotification
 end)
 
@@ -114,12 +121,16 @@ RegisterNUICallback("closeUI", function (data, cb)
 end)
 
 RegisterNUICallback("updateState", function (data, cb)
-    TriggerServerEvent("nx_dispatch:UpdateDispatchcNotifyState", data.id, data.state)
+    TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyState", data.id, data.state)
 end)
 
 RegisterNUICallback("setGps", function (data, cb)
     SetNewWaypoint(data.x, data.y)
-    TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyCounter", data.id)
+    TriggerServerEvent("nx_dispatch:IncreaseDispatchNotifyCounter", data.id)
+end)
+
+RegisterNUICallback("leftDispatch", function (data, cb)
+    TriggerServerEvent("nx_dispatch:DecreaseDispatchNotifyCounter", data.id)
 end)
 
 RegisterNUICallback("removeDispatch", function (data, cb)
@@ -127,21 +138,38 @@ RegisterNUICallback("removeDispatch", function (data, cb)
     TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyPlayer", data.id)
 end)
 
+
 --[[
     Commands
 ]]
 
 RegisterCommand("openDispatch", function (source, args, raw)
 
-
     if not Config.AllowedJobs[GetJobFramework()] then return end
 
     if Config.UI == "lib" then
         local contextID = RegisterContext(MyDispatchList.notifications)
+        
         lib.showContext(contextID)
     end
 
     if Config.UI == "custom" then
+
+        if not configuration then
+            configuration = true
+            SendNUIMessage({
+                Language = {
+                    RESOURCE_NAME               = GetCurrentResourceName(),
+                    APP_BAR_TITLE               = Config.DispatchTitle,
+                    LABEL_GO                    = Language["go"],
+                    LABEL_LEAVE                 = Language["leave"],
+                    LABEL_DELETE                = Language["delete-tooltip"],
+                    LABEL_TOOLTIP_CHECK_READ    = Language["already-seen"],
+                    LABEL_TOOLTIP_CHECK_UNREAD  = Language["not-seen"],
+                }
+            })
+        end
+
         SendNUIMessage({
             show = true,
             dispatches = MyDispatchList,
@@ -152,10 +180,12 @@ end)
 RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', Config.OpenDispatch)
 
 RegisterCommand("+gpson", function (source, args, raw)
+    if not Config.AllowedJobs[GetJobFramework()] then return end
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), true)
 end)
 
 RegisterCommand("+gpsoff", function ()
+    if not Config.AllowedJobs[GetJobFramework()] then return end
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), false)
     Blip:removeBlip(PlayerPedId())
 end)
