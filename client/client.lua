@@ -24,6 +24,7 @@ if Config.Framework == "esx" then
         if newJob.name ~= lastJob.name then
             Blip:removeBlip(PlayerPedId())
             TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
+            MyDispatchList = DispatchList:new({})
         end
     end)
 
@@ -41,6 +42,7 @@ elseif Config.Framework == "qb" then
         if newJob ~= lastJob then
             Blip:removeBlip(PlayerPedId())
             TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
+            MyDispatchList = DispatchList:new({})
         end
         lastJob = newJob
         -- print(QBCore.Debug(PlayerData))
@@ -131,6 +133,9 @@ end)
 
 RegisterCommand("openDispatch", function (source, args, raw)
 
+
+    if not Config.AllowedJobs[GetJobFramework()] then return end
+
     if Config.UI == "lib" then
         local contextID = RegisterContext(MyDispatchList.notifications)
         lib.showContext(contextID)
@@ -160,6 +165,6 @@ end)
     !DO NOT UNCOMMENT THIS!
 ]]
 
--- RegisterCommand("cc", function (source, args, raw)
---     CreateDispatchNotify("Title 1", "Description", "police", GetEntityCoords(PlayerPedId()))
--- end)
+RegisterCommand("cc", function (source, args, raw)
+    CreateDispatchNotify("Title 1", "Description", "police", GetEntityCoords(PlayerPedId()))
+end)
