@@ -1,5 +1,7 @@
 Config = {}
 
+Config.DispatchTitle = "Next Scripts Dispatch™"
+
 --[[
     "esx" and "qb" are available
 ]]
