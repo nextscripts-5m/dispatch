@@ -1,38 +1,78 @@
 ---@class Notify
 ---@field id number
 ---@field title string
+---@field time string
 ---@field description string
 ---@field jobName string
 ---@field peopleCounter number
 ---@field playersIDCounter table
+---@field playersIDStates table
 ---@field gps vector4
 ---@field players table
----@field isNew boolean
+---@field isNew boolean Client parameter. Server-side makes no sense
+---@field isComing boolean Client parameter. Server-side makes no sense
 local Notify = {}
 
 ---Dispatcher Notification Constructor
 ---@param id number
 ---@param title string
+---@param time string
 ---@param description string
 ---@param jobName string
 ---@param peopleCounter number
 ---@param gps vector3
 ---@return Notify
-function Notify:new(id, title, description, jobName, peopleCounter, gps)
+function Notify:new(id, title, time, description, jobName, peopleCounter, gps)
     local o = {
         id                  = id,
+        time                = time,
         title               = title,
         description         = description,
         jobName             = jobName,
         peopleCounter       = peopleCounter,
         playersIDCounter    = {},
+        playersIDStates     = {},
         gps                 = gps,
         players             = {},
-        isNew               = true
+        isNew               = true,
+        isComing            = false,
     }
     setmetatable(o, self)
     self.__index = self
     return o
+end
+
+---Create a Notify Instance from a table
+---@param data table
+---@return Notify
+function Notify:fromTable(data)
+    local o = setmetatable(data, self)
+    self.__index = self
+    return o
+end
+
+---Check if a player is already has checked or not the state
+---@param id any
+---@return boolean
+function Notify:hasPlayerChecked(id)
+    for k, v in pairs(self.playersIDStates) do
+        if v == id then
+            return true
+        end
+    end
+    return false
+end
+
+---Add a player "sign as read state" with given `id` for this dispatch
+---@param id any
+function Notify:addPlayerState(id)
+    self.playersIDStates[id] = id
+end
+
+---Remove a player "sign as read state" with given `id` for this dispatch
+---@param id any
+function Notify:removePlayerState(id)
+    self.playersIDStates[id] = nil
 end
 
 ---Check if a player is already coming for that notification
@@ -61,10 +101,11 @@ end
 
 ---Update the counter and returns the new counter
 ---This is a SERVER FUNCTION
+---@param amount number By how much increase or decrease the count
 ---@return number
-function Notify:updateCounter()
+function Notify:updateCounter(amount)
     local response      = MySQL.query.await("SELECT count FROM nx_dispatch WHERE id = ?", {self.id})
-    local count         = tonumber(response[1].count) + 1
+    local count         = tonumber(response[1].count) + amount
     self.peopleCounter  = count
     response            = MySQL.update.await("UPDATE nx_dispatch SET count = ? WHERE id = ?", {count, self.id})
     print("Affected rows: " .. (response and response or "ERROR"))
