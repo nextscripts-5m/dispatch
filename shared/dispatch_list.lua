@@ -27,10 +27,23 @@ function DispatchList:addNotification(notification)
     self.notifications[notification.id] = notification
 end
 
----comment
+---Remove a notification with given `id`
 ---@param id number
 function DispatchList:removeNotification(id)
     self.notifications[id] = nil
+end
+
+
+function DispatchList:updateAllCounters(playerID)
+    for k, notification in pairs(self.notifications) do
+        ---@type Notify
+        notification = notification
+        if notification:isPlayerAlreadyComing(playerID) then
+            notification:removePlayerComing(playerID)
+            notification:updateCounter(-1)
+            notification:updateReceivers()
+        end
+    end
 end
 
 
