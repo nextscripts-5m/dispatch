@@ -23,6 +23,7 @@ shared_scripts {
 	'shared/player_info.lua',
 	'shared/player_list.lua',
 	'shared/blip.lua',
+	'shared/blip_list.lua',
 	'@ox_lib/init.lua',
 	'locales.lua',
     'config.lua',
