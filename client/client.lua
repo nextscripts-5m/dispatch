@@ -1,5 +1,6 @@
 ---Contains client dispatches
 MyDispatchList      = DispatchList:new({})
+DispatchBlipList    = BlipList:new({})
 local configuration = false
 
 PlayerLoaded = function ()
@@ -27,6 +28,7 @@ if Config.Framework == "esx" then
             TriggerServerEvent("nx_dispatch:UpdatePlayerGps", lastJob.name, false)
             Blip:removeBlip(PlayerPedId())
             TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob)
+            DispatchBlipList:removeAllDispatchBlips()
             MyDispatchList = DispatchList:new({})
         end
     end)
@@ -46,6 +48,7 @@ elseif Config.Framework == "qb" then
             TriggerServerEvent("nx_dispatch:UpdatePlayerGps", lastJob, false)
             Blip:removeBlip(PlayerPedId())
             TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob)
+            DispatchBlipList:removeAllDispatchBlips()
             MyDispatchList = DispatchList:new({})
         end
         lastJob = newJob
@@ -88,6 +91,9 @@ RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotif
 
     local blip      = Blip:new(-1, dispatchNotification.jobName, dispatchNotification.title, dispatchNotification.gps, config.sprite, config.color, config.scale)
     blip:createBlip()
+
+    DispatchBlipList:addDispatchBlip(waveBlip, dispatchNotification.id)
+    DispatchBlipList:addDispatchBlip(blip, dispatchNotification.id)
 
 end)
 
@@ -150,6 +156,7 @@ end)
 
 RegisterNUICallback("removeDispatch", function (data, cb)
     MyDispatchList:removeNotification(data.id)
+    DispatchBlipList:removeDispatchBlip(data.id)
     TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyPlayer", data.id)
 end)
 
