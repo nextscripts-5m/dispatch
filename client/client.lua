@@ -1,3 +1,4 @@
+---Contains client dispatches
 MyDispatchList      = DispatchList:new({})
 local configuration = false
 
@@ -23,8 +24,9 @@ if Config.Framework == "esx" then
     RegisterNetEvent("esx:setJob", function (newJob, lastJob)
         ESX.PlayerData.job = newJob
         if newJob.name ~= lastJob.name then
+            TriggerServerEvent("nx_dispatch:UpdatePlayerGps", lastJob.name, false)
             Blip:removeBlip(PlayerPedId())
-            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
+            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob)
             MyDispatchList = DispatchList:new({})
         end
     end)
@@ -41,8 +43,9 @@ elseif Config.Framework == "qb" then
     RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
         local newJob = val.job.name
         if newJob ~= lastJob then
+            TriggerServerEvent("nx_dispatch:UpdatePlayerGps", lastJob, false)
             Blip:removeBlip(PlayerPedId())
-            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
+            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob)
             MyDispatchList = DispatchList:new({})
         end
         lastJob = newJob
@@ -70,7 +73,6 @@ exports("CreateDispatchNotify", CreateDispatchNotify)
 
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotification)
-    
     ShowNotification(Language["new-dispatch"])
 
     MyDispatchList:addNotification(dispatchNotification)
@@ -78,6 +80,15 @@ RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotif
         update = true,
         notification = dispatchNotification
     })
+
+    local config    = Config.AllowedJobs[dispatchNotification.jobName].DispatchBlip
+    local waveBlip  = Blip:new(-1, dispatchNotification.jobName, "Wave", dispatchNotification.gps, 161, config.color, 1)
+    waveBlip:createBlip()
+    waveBlip:setBlipHiddenOnLegend(true)
+
+    local blip      = Blip:new(-1, dispatchNotification.jobName, dispatchNotification.title, dispatchNotification.gps, config.sprite, config.color, config.scale)
+    blip:createBlip()
+
 end)
 
 ---@param dispatchNotification Notify
@@ -85,8 +96,9 @@ RegisterNetEvent("nx_dispatch:updateDispatch", function (dispatchNotification)
     local myID                      = GetPlayerServerId(PlayerId())
     dispatchNotification            = Notify:fromTable(dispatchNotification)
     dispatchNotification.isComing   = dispatchNotification:isPlayerAlreadyComing(myID)
-    dispatchNotification.isNew      = dispatchNotification:hasPlayerChecked(myID)
+    dispatchNotification.isNew      = (not dispatchNotification:hasPlayerChecked(myID))
     MyDispatchList.notifications[dispatchNotification.id] = dispatchNotification
+    -- print(json.encode(MyDispatchList.notifications, {indent=true}))
 end)
 
 
@@ -96,17 +108,19 @@ RegisterNetEvent("nx_dispatch:sendPlayerList", function (players)
     local myID  = GetPlayerServerId(PlayerId())
     for id, player in pairs(players) do
         ---@type PlayerInfo
-        player = player
+        player          = player
+        local playerId  = GetPlayerFromServerId(player.id)
+        local entity    = GetPlayerPed(playerId)
 
         if player.isGpsActive then
-            local playerId = GetPlayerFromServerId(player.id)
-            local entity    = GetPlayerPed(playerId)
-
             if GetBlipFromEntity(entity) == 0 then
                 local name      = (myID == player.id) and Language["me"] or player.name
-                local blip      = Blip:new(entity, player.jobName, name)
+                local config    = Config.AllowedJobs[player.jobName].PlayerBlip
+                local blip      = Blip:new(entity, player.jobName, name, vector3(0, 0, 0), config.sprite, config.color, config.scale)
                 blip:createBlip()
             end
+        else
+            Blip:removeBlip(entity)
         end
     end
 end)
@@ -130,6 +144,7 @@ RegisterNUICallback("setGps", function (data, cb)
 end)
 
 RegisterNUICallback("leftDispatch", function (data, cb)
+    DeleteWaypoint()
     TriggerServerEvent("nx_dispatch:DecreaseDispatchNotifyCounter", data.id)
 end)
 
@@ -149,7 +164,6 @@ RegisterCommand("openDispatch", function (source, args, raw)
 
     if Config.UI == "lib" then
         local contextID = RegisterContext(MyDispatchList.notifications)
-        
         lib.showContext(contextID)
     end
 
