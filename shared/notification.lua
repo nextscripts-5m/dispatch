@@ -7,7 +7,7 @@
 ---@field peopleCounter number
 ---@field playersIDCounter table
 ---@field playersIDStates table
----@field gps vector4
+---@field gps vector3
 ---@field players table
 ---@field isNew boolean Client parameter. Server-side makes no sense
 ---@field isComing boolean Client parameter. Server-side makes no sense
