@@ -5,6 +5,7 @@ Lang = {
         ["new-dispatch"] = "Hai una nuova segnalazione!",
         ["dispatch-title"] = "Lista delle notifiche",
         ["dispatch-people"] = "Persone",
+        ["dispatch-time"] = "Ora",
         ["go"] = "VAI",
         ["delete"] = "Elimina Notifica",
         ["already-seen"] = "Segna come già letta!",
@@ -17,12 +18,13 @@ Lang = {
         ["new-dispatch"] = "You have a new report!",
         ["dispatch-title"] = "Dispatch notifies",
         ["dispatch-people"] = "People",
+        ["dispatch-time"] = "Time",
         ["go"] = "GO",
         ["delete"] = "Delete Notification",
         ["already-seen"] = "Sign as already read!",
         ["not-seen"] = "Sign as NOT read!",
         ["me"] = "Me",
-        ["leave"] = "leave",
+        ["leave"] = "LEAVE",
         ["delete-tooltip"] = "DELETE",
     }
 }
