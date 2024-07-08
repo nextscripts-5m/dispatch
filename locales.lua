@@ -13,6 +13,8 @@ Lang = {
         ["me"] = "Io",
         ["leave"] = "ABBANDONA",
         ["delete-tooltip"] = "ELIMINA",
+        ["activate"] = "Attiva GPS",
+        ["deactivate"] = "Disattiva GPS",
     },
     ["en"] = {
         ["new-dispatch"] = "You have a new report!",
@@ -26,5 +28,7 @@ Lang = {
         ["me"] = "Me",
         ["leave"] = "LEAVE",
         ["delete-tooltip"] = "DELETE",
+        ["activate"] = "Activate GPS",
+        ["deactivate"] = "Deactivate GPS",
     }
 }
