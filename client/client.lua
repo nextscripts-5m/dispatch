@@ -2,6 +2,7 @@
 MyDispatchList      = DispatchList:new({})
 DispatchBlipList    = BlipList:new({})
 local configuration = false
+local myGPS         = false
 
 PlayerLoaded = function ()
     TriggerServerEvent("nx_dispatch:AddPlayer", GetJobFramework())
@@ -30,6 +31,7 @@ if Config.Framework == "esx" then
             TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob)
             DispatchBlipList:removeAllDispatchBlips()
             MyDispatchList = DispatchList:new({})
+            myGPS = false
         end
     end)
 
@@ -160,10 +162,15 @@ RegisterNUICallback("removeDispatch", function (data, cb)
     TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyPlayer", data.id)
 end)
 
+RegisterNUICallback("updatePlayerGps", function (data, cb)
+    TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), data.toggle)
+    myGPS = data.toggle
+end)
 
 --[[
     Commands
 ]]
+
 
 RegisterCommand("openDispatch", function (source, args, raw)
 
@@ -187,13 +194,16 @@ RegisterCommand("openDispatch", function (source, args, raw)
                     LABEL_DELETE                = Language["delete-tooltip"],
                     LABEL_TOOLTIP_CHECK_READ    = Language["already-seen"],
                     LABEL_TOOLTIP_CHECK_UNREAD  = Language["not-seen"],
+                    LABEL_ACTIVATE_GPS          = Language["activate"],
+                    LABEL_DEACTIVATE_GPS        = Language["deactivate"],
                 }
             })
         end
 
         SendNUIMessage({
-            show = true,
-            dispatches = MyDispatchList,
+            show        = true,
+            dispatches  = MyDispatchList,
+            myGPS       = myGPS
         })
         SetNuiFocus(true, true)
     end
@@ -203,12 +213,14 @@ RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', Config.Open
 RegisterCommand("+gpson", function (source, args, raw)
     if not Config.AllowedJobs[GetJobFramework()] then return end
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), true)
+    myGPS = true
 end)
 
 RegisterCommand("+gpsoff", function ()
     if not Config.AllowedJobs[GetJobFramework()] then return end
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), false)
     Blip:removeBlip(PlayerPedId())
+    myGPS = false
 end)
 
 --[[
