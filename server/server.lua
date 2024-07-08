@@ -10,7 +10,7 @@ else
 end
 
 --- Contains all notifies
-AllNotifies         = {}
+AllNotifies         = DispatchList:new({})
 AllOnlinePlayers    = PlayerList:new({})
 
 --[[
@@ -25,8 +25,9 @@ end)
 RegisterNetEvent("nx_dispatch:IncreaseDispatchNotifyCounter", function (id)
     local source    = source
     ---@type Notify
-    local n         = AllNotifies[id]
+    local n         = AllNotifies:getNotification(id)
     if n:isPlayerAlreadyComing(source) then return end
+    AllNotifies:updateAllCounters(source)
     n:addPlayerComing(source)
     n:updateCounter(1)
     n:updateReceivers()
@@ -35,7 +36,7 @@ end)
 RegisterNetEvent("nx_dispatch:DecreaseDispatchNotifyCounter", function (id)
     local source    = source
     ---@type Notify
-    local n         = AllNotifies[id]
+    local n         = AllNotifies:getNotification(id)
     if not n:isPlayerAlreadyComing(source) then return end
     n:removePlayerComing(source)
     n:updateCounter(-1)
@@ -45,11 +46,11 @@ end)
 RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyState", function (id, state)
     local source    = source
     ---@type Notify
-    local n         = AllNotifies[id]
+    local n         = AllNotifies:getNotification(id)
     if state then
-        n:addPlayerState(source)
-    else
         n:removePlayerState(source)
+    else
+        n:addPlayerState(source)
     end
     n:updateReceiver(source)
 end)
@@ -57,13 +58,13 @@ end)
 RegisterNetEvent("nx_dispatch:UpdateDispatchNotifyPlayer", function (id)
     local source    = source
     ---@type Notify
-    local n         = AllNotifies[id]
+    local n         = AllNotifies:getNotification(id)
     n:removePlayer(source)
 end)
 
 RegisterNetEvent("nx_dispatch:UpdatePlayerGps", function (jobName, toggle)
     local source    = source
-    local p = AllOnlinePlayers:getPlayer(source)
+    local p         = AllOnlinePlayers:getPlayer(source)
     if type(p) ~= "number" then
         p:toggleGps(toggle)
         AllOnlinePlayers.players[jobName][p.id] = p
@@ -109,12 +110,12 @@ CreateDispatchNotify = function (title, description, jobName, coords, xPlayerSou
     })
 
     local time  = os.date("*t")
-    time        = ("%s:%s"):format(time.hour, time.min)
-    
+    time        = ("%02d:%02d"):format(time.hour, time.min)
+
     local newNotify = Notify:new(id, title, time, description, jobName, 0, coords)
     newNotify:addPlayer(xPlayerSource)
     newNotify:sendDispatch()
-    AllNotifies[newNotify.id] = newNotify
+    AllNotifies:addNotification(newNotify)
 end
 exports("CreateDispatchNotify", CreateDispatchNotify)
 
