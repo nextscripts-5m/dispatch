@@ -52,7 +52,7 @@ function Blip:createBlip()
 end
 
 ---Remove a blip with given `entity` or its `self.id`
----@param entity integer
+---@param entity? integer
 function Blip:removeBlip(entity)
     if entity then
         RemoveBlip(GetBlipFromEntity(entity))
