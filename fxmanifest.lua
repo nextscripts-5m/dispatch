@@ -2,7 +2,7 @@ fx_version 'cerulean'
 lua54 'yes'
 game 'gta5'
 
-version	'1.0'
+version	'1.3'
 
 client_scripts {
 	'client/framework.lua',
