@@ -23,9 +23,15 @@ Config.UI = "custom"
 --- Jobs that can receive dispatch notification
 Config.AllowedJobs = {
     ["police"] = {
-        Blip = {
-            color = 3,
-            scale = .85,
+        PlayerBlip = {
+            color   = 3,
+            sprite  = 1,
+            scale   = 0.85,
+        },
+        DispatchBlip = {
+            color   = 3,
+            sprite  = 310,
+            scale   = 1,
         }
     },
 }
