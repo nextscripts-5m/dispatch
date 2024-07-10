@@ -31,7 +31,7 @@ Config.AllowedJobs = {
         DispatchBlip = {
             color   = 3,
             sprite  = 310,
-            scale   = 1,
+            scale   = 0.85,
         }
     },
 }
