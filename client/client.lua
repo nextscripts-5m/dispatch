@@ -10,6 +10,7 @@ end
 
 PlayerLogout = function ()
     TriggerServerEvent("nx_dispatch:RemovePlayer", GetJobFramework())
+    myGPS   = false
 end
 
 if Config.Framework == "esx" then
@@ -28,7 +29,7 @@ if Config.Framework == "esx" then
         if newJob.name ~= lastJob.name then
             TriggerServerEvent("nx_dispatch:UpdatePlayerGps", lastJob.name, false)
             Blip:removeBlip(PlayerPedId())
-            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob)
+            TriggerServerEvent("nx_dispatch:RemovePlayer", lastJob.name)
             DispatchBlipList:removeAllDispatchBlips()
             MyDispatchList = DispatchList:new({})
             myGPS = false
@@ -157,6 +158,7 @@ RegisterNUICallback("leftDispatch", function (data, cb)
 end)
 
 RegisterNUICallback("removeDispatch", function (data, cb)
+    DeleteWaypoint()
     MyDispatchList:removeNotification(data.id)
     DispatchBlipList:removeDispatchBlip(data.id)
     TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyPlayer", data.id)
@@ -212,6 +214,7 @@ RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', Config.Open
 
 RegisterCommand("+gpson", function (source, args, raw)
     if not Config.AllowedJobs[GetJobFramework()] then return end
+    print(GetJobFramework())
     TriggerServerEvent("nx_dispatch:UpdatePlayerGps", GetJobFramework(), true)
     myGPS = true
 end)
