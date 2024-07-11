@@ -20,6 +20,11 @@ Config.OpenDispatch = 'l'
 ]]
 Config.UI = "custom"
 
+--[[
+    Available themes: "blue", "green", "red"
+]]
+Config.Theme = "blue"
+
 --- Jobs that can receive dispatch notification
 Config.AllowedJobs = {
     ["police"] = {
