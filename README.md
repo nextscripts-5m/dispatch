@@ -26,7 +26,7 @@ Since you can also use ox_lib for the UI:
 
 # 🎬 Preview
 
-Soon
+Watch the preview [here](https://youtu.be/n5I8NCA_NKc)!
 
 # 📕 Documentation
 
