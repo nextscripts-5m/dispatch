@@ -198,6 +198,7 @@ RegisterCommand("openDispatch", function (source, args, raw)
                     LABEL_TOOLTIP_CHECK_UNREAD  = Language["not-seen"],
                     LABEL_ACTIVATE_GPS          = Language["activate"],
                     LABEL_DEACTIVATE_GPS        = Language["deactivate"],
+                    THEME_COLOR                 = Config.Theme,
                 }
             })
         end
@@ -232,5 +233,9 @@ end)
 ]]
 
 -- RegisterCommand("cc", function (source, args, raw)
---     CreateDispatchNotify("Title 1", "Description", "police", GetEntityCoords(PlayerPedId()))
+--     CreateDispatchNotify("Robbery", "A robbery is in progress at number 667", "police", GetEntityCoords(PlayerPedId()))
+-- end)
+
+-- RegisterCommand("nn", function (source, args, raw)
+--     ShowNotification(Language["new-dispatch"])
 -- end)
