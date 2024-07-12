@@ -1,8 +1,15 @@
 ---Contains client dispatches
-MyDispatchList      = DispatchList:new({})
-DispatchBlipList    = BlipList:new({})
-local configuration = false
-local myGPS         = false
+MyDispatchList          = DispatchList:new({})
+DispatchBlipList        = BlipList:new({})
+local configuration     = false
+local myGPS             = false
+TabletAnimation   = Animation:new(
+    PlayerPedId(),
+    "amb@code_human_in_bus_passenger_idles@female@tablet@base",
+    "base",
+    -1,
+    49
+)
 
 PlayerLoaded = function ()
     TriggerServerEvent("nx_dispatch:AddPlayer", GetJobFramework())
@@ -77,6 +84,12 @@ exports("CreateDispatchNotify", CreateDispatchNotify)
     Events
 ]]
 
+RegisterNetEvent("onClientResourceStart", function (resource)
+    if resource == GetCurrentResourceName() then
+        TabletAnimation:stopAnimation()
+    end
+end)
+
 ---@param dispatchNotification Notify
 RegisterNetEvent("nx_dispatch:SendDispatchNotification", function (dispatchNotification)
     ShowNotification(Language["new-dispatch"])
@@ -141,6 +154,7 @@ end)
 RegisterNUICallback("closeUI", function (data, cb)
     -- print(data.message)
     SetNuiFocus(false, false)
+    TabletAnimation:stopAnimation()
 end)
 
 RegisterNUICallback("updateState", function (data, cb)
@@ -210,6 +224,10 @@ RegisterCommand("openDispatch", function (source, args, raw)
         })
         SetNuiFocus(true, true)
     end
+
+    if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId() then return end
+    TabletAnimation:AttachPropToEntity(`prop_cs_tablet`, 60309, vector3(0.03, 0.002, -0.0), vector3(10.0, 160.0, 0.0))
+    TabletAnimation:startAnimation()
 end)
 RegisterKeyMapping('openDispatch', 'Open Dispatch List', 'keyboard', Config.OpenDispatch)
 
@@ -232,9 +250,9 @@ end)
     !DO NOT UNCOMMENT THIS!
 ]]
 
--- RegisterCommand("cc", function (source, args, raw)
---     CreateDispatchNotify("Robbery", "A robbery is in progress at number 667", "police", GetEntityCoords(PlayerPedId()))
--- end)
+RegisterCommand("cc", function (source, args, raw)
+    CreateDispatchNotify("Robbery", "A robbery is in progress at number 667", "police", GetEntityCoords(PlayerPedId()))
+end)
 
 -- RegisterCommand("nn", function (source, args, raw)
 --     ShowNotification(Language["new-dispatch"])
