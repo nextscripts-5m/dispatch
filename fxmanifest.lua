@@ -2,7 +2,7 @@ fx_version 'cerulean'
 lua54 'yes'
 game 'gta5'
 
-version	'1.5'
+version	'1.6'
 
 client_scripts {
 	'client/framework.lua',
@@ -18,6 +18,7 @@ server_scripts {
 }
 
 shared_scripts {
+	'shared/animation.lua',
 	'shared/notification.lua',
 	'shared/dispatch_list.lua',
 	'shared/player_info.lua',
