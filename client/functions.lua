@@ -67,7 +67,10 @@ RegisterContext = function (dispatchNotifications)
     lib.registerContext({
         id      = "dispatch_menu",
         title   = Language["dispatch-title"],
-        options = elements
+        options = elements,
+        onExit  = function ()
+            TabletAnimation:stopAnimation()
+        end
     })
     return "dispatch_menu"
 end
