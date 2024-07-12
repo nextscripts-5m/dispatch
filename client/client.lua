@@ -250,9 +250,9 @@ end)
     !DO NOT UNCOMMENT THIS!
 ]]
 
-RegisterCommand("cc", function (source, args, raw)
-    CreateDispatchNotify("Robbery", "A robbery is in progress at number 667", "police", GetEntityCoords(PlayerPedId()))
-end)
+-- RegisterCommand("cc", function (source, args, raw)
+--     CreateDispatchNotify("Robbery", "A robbery is in progress at number 667", "police", GetEntityCoords(PlayerPedId()))
+-- end)
 
 -- RegisterCommand("nn", function (source, args, raw)
 --     ShowNotification(Language["new-dispatch"])
