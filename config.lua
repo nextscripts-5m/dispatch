@@ -25,6 +25,14 @@ Config.UI = "custom"
 ]]
 Config.Theme = "blue"
 
+
+--[[
+    If true, when a player shoots it send a dispatch.
+    Change the wait ms in the client thread, lower ms increase resmon but catch every single bullet.
+    Higher ms reduce resmon and catch less bullets
+]]
+Config.SendDispatchOnFire = true
+
 --- Jobs that can receive dispatch notification
 Config.AllowedJobs = {
     ["police"] = {
