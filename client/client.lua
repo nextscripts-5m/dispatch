@@ -246,6 +246,27 @@ RegisterCommand("+gpsoff", function ()
 end)
 
 --[[
+    Threads
+]]
+
+local delay = 100
+
+CreateThread(function ()
+    if Config.SendDispatchOnFire then
+        while true do
+            if IsPedShooting(PlayerPedId()) then
+                if GetJobFramework() ~= "police" then
+                    print("creating")
+                    CreateDispatchNotify("Shooting", "Gunshots have been detected in this area!", "police", GetEntityCoords(PlayerPedId()))
+                    Wait(30 * 1000)
+                end
+            end
+            Wait(delay)
+        end
+    end
+end)
+
+--[[
     Test
     !DO NOT UNCOMMENT THIS!
 ]]
