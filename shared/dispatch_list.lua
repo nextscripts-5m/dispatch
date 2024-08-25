@@ -46,5 +46,14 @@ function DispatchList:updateAllCounters(playerID)
     end
 end
 
+---Return a list with all notifications
+---@return table
+function DispatchList:toList()
+    local t = {}
+    for k, notification in pairs(self.notifications) do
+        table.insert(t, notification)
+    end
+    return t
+end
 
 _ENV.DispatchList = DispatchList
