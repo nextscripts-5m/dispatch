@@ -38,6 +38,7 @@ RegisterContext = function (dispatchNotifications)
                     icon    = "fa-solid fa-trash-can",
                     onSelect = function ()
                         MyDispatchList:removeNotification(notify.id)
+                        DispatchBlipList:removeDispatchBlip(notify.id)
                         TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyPlayer", notify.id)
                     end
                 },
