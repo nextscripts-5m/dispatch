@@ -219,7 +219,7 @@ RegisterCommand("openDispatch", function (source, args, raw)
 
         SendNUIMessage({
             show        = true,
-            dispatches  = MyDispatchList,
+            dispatches  = MyDispatchList:toList(),
             myGPS       = myGPS
         })
         SetNuiFocus(true, true)
