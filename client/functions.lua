@@ -10,6 +10,9 @@ RegisterContext = function (dispatchNotifications)
             id      = ("notify_%s"):format(notify.id),
             title   = notify.title,
             menu    = "dispatch_menu",
+            onExit  = function ()
+                TabletAnimation:stopAnimation()
+            end,
             options = {
                 notify.isComing and {
                     title       = Language["leave"],
@@ -20,6 +23,7 @@ RegisterContext = function (dispatchNotifications)
                     onSelect    = function()
                         DeleteWaypoint()
                         TriggerServerEvent("nx_dispatch:DecreaseDispatchNotifyCounter", notify.id)
+                        TabletAnimation:stopAnimation()
                     end
                 } or
                 {
@@ -31,6 +35,7 @@ RegisterContext = function (dispatchNotifications)
                     onSelect    = function()
                         SetNewWaypoint(notify.gps.x, notify.gps.y)
                         TriggerServerEvent("nx_dispatch:IncreaseDispatchNotifyCounter", notify.id)
+                        TabletAnimation:stopAnimation()
                     end
                 },
                 {
@@ -40,6 +45,7 @@ RegisterContext = function (dispatchNotifications)
                         MyDispatchList:removeNotification(notify.id)
                         DispatchBlipList:removeDispatchBlip(notify.id)
                         TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyPlayer", notify.id)
+                        TabletAnimation:stopAnimation()
                     end
                 },
                 {
@@ -47,6 +53,7 @@ RegisterContext = function (dispatchNotifications)
                     icon    = "fa-solid fa-map-pin",
                     onSelect = function ()
                         TriggerServerEvent("nx_dispatch:UpdateDispatchNotifyState", notify.id, not notify.isNew)
+                        TabletAnimation:stopAnimation()
                     end
                 }
             }
