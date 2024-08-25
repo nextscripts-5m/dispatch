@@ -76,6 +76,7 @@ end)
 RegisterNetEvent("nx_dispatch:AddPlayer", function (jobName)
     local source    = source
     local xPlayer   = GetXPlayer(source)
+    if not xPlayer then return end
     local player    = PlayerInfo:new(tonumber(source) + 0, GetPlayerName(xPlayer), GetPlayerJobName(xPlayer))
     AllOnlinePlayers:addPlayer(jobName, player)
     AllOnlinePlayers:sendPlayerList(jobName)
