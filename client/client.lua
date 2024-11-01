@@ -222,7 +222,9 @@ RegisterCommand("openDispatch", function (source, args, raw)
             dispatches  = MyDispatchList:toList(),
             myGPS       = myGPS
         })
+
         SetNuiFocus(true, true)
+        SetNuiFocusKeepInput(Config.MoveWhileOpen)
     end
 
     if GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId() then return end

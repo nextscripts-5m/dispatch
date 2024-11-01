@@ -25,6 +25,8 @@ Config.UI = "custom"
 ]]
 Config.Theme = "blue"
 
+--- If true, you can move while the custom UI is open 
+Config.MoveWhileOpen = false
 
 --[[
     If true, when a player shoots it send a dispatch.
